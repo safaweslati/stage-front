@@ -1,0 +1,43 @@
+
+<div class="container mt-4">
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!showTable" class="container" style="max-width: 680px;padding-top: 5%">
+    <div class="input-group">
+      <input class="form-control form-control-lg" id="formFileLg" type="file" (change)="onFileSelected($event)" />
+      <button class="btn btn-primary" (click)="uploadFile()" [disabled]="errorMessage || !fileSelected">Upload</button>
+    </div>
+  </div>
+
+  <div *ngIf="!showTable" class="container" style="padding-top: 8%">
+    <app-uploaded-files></app-uploaded-files>
+  </div>
+
+
+
+</div>
+
+
+
+<div *ngIf="showTable" class="p-2">
+  <div  class="d-flex flex-row-reverse" >
+    <button class="m-1 btn btn-secondary" (click)="uploadNewFile()">Upload New File</button>
+    <button class="m-1 btn btn-primary" (click)="addToDatabase()">Add to Database</button>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col" *ngFor="let header of excelDataHeaders">{{ header }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let row of excelData">
+      <td *ngFor="let cell of row">{{ cell }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

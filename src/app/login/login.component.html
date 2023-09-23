@@ -1,0 +1,36 @@
+<section class="vh-100" style="padding-top: 100px">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-6 col-lg-5 col-xl-4">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+             class="img-fluid" alt="Sample image" style="max-height: 400px;">
+      </div>
+      <div class="col-md-6 col-lg-7 col-xl-6 offset-xl-1">
+        <form #loginForm="ngForm" style="padding-top: 60px">
+          <div class="form-outline mb-4">
+<!--            <label class="form-label" for="form3Example3">Username</label>-->
+            <input type="text" id="form3Example3" class="form-control form-control-lg" name="username"
+                   placeholder="Enter username" required ngModel/>
+          </div>
+
+          <div class="form-outline mb-4">
+<!--            <label class="form-label" for="form3Example4">Password</label>-->
+            <input type="password" id="form3Example4" class="form-control form-control-lg" name="password"
+                   placeholder="Enter password" required ngModel/>
+          </div>
+
+          <div class="form-outline mb-4">
+            <button  [disabled]="loginForm.invalid"
+                     class="btn btn-primary"
+                     (click)="login(loginForm)" style="width: 100px;">
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+

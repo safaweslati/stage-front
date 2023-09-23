@@ -1,0 +1,25 @@
+
+
+  <table class="table table-bordered" *ngIf="uploadedFiles">
+  <thead>
+  <tr>
+    <th scope="col">File Name</th>
+    <th scope="col">File Size</th>
+    <th scope="col">Destination Table</th>
+    <th scope="col">Upload Date</th>
+    <th scope="col">Upload User</th>
+    <th scope="col">ZIP</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let file of uploadedFiles">
+    <td>{{file.fileName}}</td>
+    <td>{{file.fileSize}}</td>
+    <td>{{file.destinationTable}}</td>
+    <td>{{file.uploadDate}}</td>
+    <td>{{file.uploadUser}}</td>
+    <td><a [href]="'https://localhost:7100/api/FileUpload/download/' + file.zipFileName" target="_blank" rel="noopener noreferrer">Download ZIP</a></td>
+  </tr>
+  </tbody>
+</table>
+
