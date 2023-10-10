@@ -10,6 +10,8 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent {
 
+  errorMessage: string | null = null;
+
   constructor(private authenticationService : AuthentificationService,
               private router : Router) {
   }
@@ -22,7 +24,11 @@ export class LoginComponent {
         localStorage['token'] = token;
         this.router.navigate(link);
       },
-      (error) => console.log(error)
+      (error) => {
+        this.errorMessage = "Invalid username or password";
+        console.log(error)
+      }
+
     )
   }
 }

@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 })
 export class FileUploadService {
   private excelData: any[][] = [];
-
+  private insertedData: any[][] = [];
   constructor(private http: HttpClient) {}
   private link = 'https://localhost:7100/api/FileUpload';
   private file! : File;
@@ -35,13 +35,8 @@ export class FileUploadService {
        this.excelData=excelData;
   }
 
-  uploadFile(file: File, fileInfo: any) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('fileInfos', JSON.stringify(fileInfo));
-
-
-    return this.http.post(this.link, formData,{ responseType: 'text' });
+  getData(){
+    return this.excelData;
   }
 
   getTables() {
@@ -56,17 +51,23 @@ export class FileUploadService {
     return this.http.get<string[]>(`${this.link}/destination-columns?table=${selectedTable}`);
   }
 
-
-  mapAndUpload(mappingForm: any,destinationTable: string): Observable<any> {
+  saveAndMapUpload(file: File, fileInfo: any, mappingForm: any, destinationTable: string): Observable<any> {
     const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileInfos', JSON.stringify(fileInfo));
     formData.append('excelData', JSON.stringify(this.excelData));
     formData.append('mappingForm', JSON.stringify(mappingForm));
     formData.append('destinationTable', destinationTable);
 
-    console.log(mappingForm);
-    console.log(this.excelData);
     return this.http.post<any>(`${this.link}/map-and-upload`, formData);
   }
 
 
+  getInsertedData() {
+    return this.insertedData;
+  }
+
+  setInsertedData(insertedData: any){
+    this.insertedData = insertedData;
+  }
 }

@@ -1,0 +1,19 @@
+
+<div style="padding-top: 1%">
+  <div  class="d-flex flex-row-reverse" >
+    <button class="m-lg-4 btn btn-secondary" (click)="uploadNewFile()">Upload New File</button>
+  </div>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th scope="col" *ngFor="let header of initialExcelData[0]">{{ header }}</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let row of initialExcelData.slice(1)" [class]="getRowClass(row)">
+    <td *ngFor="let cell of row">{{ cell }}</td>
+  </tr>
+  </tbody>
+</table>
+
+</div>

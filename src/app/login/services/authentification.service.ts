@@ -12,4 +12,13 @@ export class AuthentificationService {
   login(credentials: any) {
       return this.http.post(this.link, credentials);
   }
+
+  logout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('headers');
+  }
+
+  isLogged(){
+    return !! localStorage.getItem('token');
+  }
 }

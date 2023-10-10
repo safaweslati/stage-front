@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {FileUploadService} from "../home/services/file-upload.service";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import jwt_decode from 'jwt-decode';
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -17,9 +18,11 @@ export class FileConfigComponent {
   headers: string[] = [];
   columns: string[] = [];
   mappingForm: FormGroup;
+  successMessage : string | null = null;
+  errorMessage: string | null = null;
 
 
-    constructor(private fileUploadService: FileUploadService,private formBuilder: FormBuilder) {
+    constructor(private fileUploadService: FileUploadService,private formBuilder: FormBuilder,private router: Router) {
       this.fileUploadService.getTables().subscribe(
         (response) => {
           console.log(response);
@@ -42,9 +45,11 @@ export class FileConfigComponent {
     for (const header of this.headers) {
       this.mappingForm.addControl(header, new FormControl('Select a DB field'));
       this.mappingForm.addControl(`action${header}`, new FormControl('Convert'));
-      this.mappingForm.addControl(`cropValue${header}`, new FormControl(''));
       this.mappingForm.addControl(`filterValue${header}`, new FormControl(''));
-      this.mappingForm.addControl(`filterOperator${header}`, new FormControl('Filter Operator'));
+      this.mappingForm.addControl(`filterOperator${header}`, new FormControl(''));
+      this.mappingForm.addControl(`sortOrder${header}`, new FormControl(''));
+      this.mappingForm.addControl(`AggregateOperation${header}`, new FormControl(''));
+
 
     }
 
@@ -70,20 +75,24 @@ export class FileConfigComponent {
     });
   }
 
-  saveFile(){
-      let uploadUser = '';
+  MapAndUpload() {
+    let uploadUser = '';
     const fileName = this.file.name;
     const fileSize = `${(this.file.size / 1024).toFixed(2)} KB`;
-    const uploadDate = new Date();
-    const token = localStorage.getItem('token') ;
-     if(token !== null){
-    try {
-      const decodedToken: any = jwt_decode(token);
-      uploadUser = decodedToken.unique_name;
-      console.log(uploadUser);
-    } catch(Error) {
-      console.log(Error);
-    }}
+    const currentDate = new Date();
+    const options = { timeZone: 'Africa/Tunis', hour12: false };
+    const uploadDate = currentDate.toLocaleString('en-US', options);
+    const token = localStorage.getItem('token');
+
+    if (token !== null) {
+      try {
+        const decodedToken: any = jwt_decode(token);
+        uploadUser = decodedToken.unique_name;
+        console.log(uploadUser);
+      } catch (error) {
+        console.log(error);
+      }
+    }
 
     const fileInfo = {
       fileName: fileName,
@@ -92,55 +101,61 @@ export class FileConfigComponent {
       uploadDate: uploadDate,
       uploadUser: uploadUser,
     };
-    this.fileUploadService.uploadFile(this.file, fileInfo).subscribe(
-      (response) => {
-        try {
-          const jsonResponse = JSON.parse(response);
-          console.log(jsonResponse);
-        }
-     catch (error) {
-      console.error('Error parsing JSON response:', error);
-    }
-  })
-    }
 
-
-  MapAndUpload() {
-      this.saveFile();
-    console.log(this.mappingForm);
-    const mappingData : any = {};
+    const mappingData: any = {};
 
     for (const header of this.headers) {
       const selectedValue = this.mappingForm.get(header)?.value;
       const action = this.mappingForm.get(`action${header}`)?.value;
-      if (action === 'Crop') {
-        mappingData[`cropValue${header}`] = this.mappingForm.get(`cropValue${header}`)?.value;
-      }
+
       if (action === 'Filter') {
         mappingData[`filterValue${header}`] = this.mappingForm.get(`filterValue${header}`)?.value;
         mappingData[`filterOperator${header}`] = this.mappingForm.get(`filterOperator${header}`)?.value;
       }
+      if (action === 'Sort') {
+        mappingData[`sortOrder${header}`] = this.mappingForm.get(`sortOrder${header}`)?.value;
+      }
+      if (action === 'Aggregate') {
+        mappingData[`AggregateOperation${header}`] = this.mappingForm.get(`AggregateOperation${header}`)?.value;
+      }
       mappingData[header] = selectedValue;
       mappingData[`action${header}`] = action;
     }
-    this.fileUploadService.mapAndUpload(mappingData, this.selectedDestinationTable).subscribe(
+
+    this.fileUploadService.saveAndMapUpload(this.file, fileInfo, mappingData, this.selectedDestinationTable).subscribe(
       (response) => {
+        this.successMessage = response.message;
+        this.fileUploadService.setInsertedData(response.insertedData)
         console.log(response);
+        setTimeout(() => {
+          this.router.navigate(['DisplayData']);
+        }, 3000);
       },
       (error) => {
+        this.errorMessage = error;
         console.error(error);
-      })
-  }
 
-
-  isCropAction(header: string): boolean {
-    const action = this.mappingForm.get(`action${header}`)?.value;
-    return action === 'Crop';
+        // Handle save and map error
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 5000);
+      }
+    );
   }
 
 
   isFilterAction(header: string) : boolean {
     const action = this.mappingForm.get(`action${header}`)?.value;
     return action === 'Filter';
+  }
+
+  isSortAction(header: string) : boolean {
+    const action = this.mappingForm.get(`action${header}`)?.value;
+    return action === 'Sort';
+  }
+
+  isAggregateAction(header: string): boolean {
+    const action = this.mappingForm.get(`action${header}`)?.value;
+    return action === 'Aggregate';
   }
 }

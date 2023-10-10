@@ -10,9 +10,11 @@ import {LoginGuard} from "./login/guards/login.guard";
 import {HttpClientModule} from "@angular/common/http";
 import { HomeComponent } from './home/home.component';
 import { FileConfigComponent } from './file-config/file-config.component';
-import { AppLayoutComponent } from './app-layout/app-layout.component';
+import { HeaderComponent } from './header/header.component';
 import { UploadedFilesComponent } from './uploaded-files/uploaded-files.component';
 import {DatePipe} from "@angular/common";
+import {LogoutGuard} from "./login/guards/logout.guard";
+import { DisplayDataComponent } from './display-data/display-data.component';
 
 
 @NgModule({
@@ -21,8 +23,9 @@ import {DatePipe} from "@angular/common";
     LoginComponent,
     HomeComponent,
     FileConfigComponent,
-    AppLayoutComponent,
     UploadedFilesComponent,
+    HeaderComponent,
+    DisplayDataComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,7 @@ import {DatePipe} from "@angular/common";
     FormsModule,
     HttpClientModule,
   ],
-  providers: [LoginGuard,DatePipe],
+  providers: [LoginInterceptorProvider,LoginGuard,DatePipe,LogoutGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

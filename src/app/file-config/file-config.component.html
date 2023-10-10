@@ -1,4 +1,14 @@
 
+
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+
+<div *ngIf="successMessage" class="alert alert-success">
+  {{ successMessage }}
+</div>
+
+
 <div class="container" style="max-width: 680px;padding-top: 5%">
 <select class="form-select" aria-label="select example" [(ngModel)]="selectedDestinationTable" (change)="onTableSelection()">
   <option disabled selected>Choose Destination Table</option>
@@ -29,18 +39,11 @@
         <td style="width: 40%">
           <select class="form-select" [formControlName]="'action' + header">
             <option value="Convert" selected>Convert</option>
-            <option value="Crop">Crop</option>
             <option value="Filter">Filter</option>
             <option value="Sort">Sort</option>
+            <option value="Aggregate">Aggregate</option>
           </select>
-          <div *ngIf="isCropAction(header)" style = "padding-top: 10px; ">
-            <input
-              class="form-control"
-              type="number"
-              [formControlName]="'cropValue' + header"
-              placeholder="Crop Value"
-            />
-          </div>
+
           <div *ngIf="isFilterAction(header)" style="display: flex; align-items: center; padding-top: 10px;">
           <select class="form-select" [formControlName]="'filterOperator' + header" >
             <option disabled selected value="filterOperator">Filter Operator</option>
@@ -49,8 +52,27 @@
             <option value="Equals">Equals</option>
             <option value="NotEquals">Not Equals</option>
             <option value="Contains">Contains</option>
+            <option value="DoesNotContain">Does Not Contain</option>
           </select>
           <input class="form-control" type="text" [formControlName]="'filterValue' + header" placeholder="Filter Value"/>
+          </div>
+
+
+          <div *ngIf="isAggregateAction(header)" style="padding-top: 10px;">
+            <select class="form-select" [formControlName]="'AggregateOperation' + header" >
+              <option value="Sum">Sum</option>
+              <option value="Avg">Average</option>
+              <option value="Count">Count</option>
+              <option value="Min">Minimum</option>
+              <option value="Max">Maximum</option>
+            </select>
+          </div>
+
+          <div *ngIf="isSortAction(header)" style="padding-top: 10px;">
+            <select class="form-select" [formControlName]="'sortOrder' + header" >
+              <option selected value="Asc">Ascending</option>
+              <option value="Desc">Descending</option>
+            </select>
           </div>
         </td>
       </tr>

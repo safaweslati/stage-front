@@ -5,19 +5,26 @@
     {{ errorMessage }}
   </div>
 
-  <div *ngIf="!showTable" class="container" style="max-width: 680px;padding-top: 5%">
-    <div class="input-group">
-      <input class="form-control form-control-lg" id="formFileLg" type="file" (change)="onFileSelected($event)" />
-      <button class="btn btn-primary" (click)="uploadFile()" [disabled]="errorMessage || !fileSelected">Upload</button>
+
+
+  <div class="container mt-4" *ngIf="!showTable">
+    <div class="container" style="max-width: 680px; padding-top: 5%">
+      <div class="input-group">
+        <input class="form-control form-control-lg" id="formFileLg" type="file" (change)="onFileSelected($event)" />
+        <button class="btn btn-primary" (click)="uploadFile()" [disabled]="errorMessage || !fileSelected">Upload</button>
+        </div>
+      <div class="pt-3" *ngIf="fileSelected">
+        <select class="form-select" [(ngModel)]="selectedSheet">
+          <option *ngFor="let sheetName of sheetNames" [value]="sheetName">{{ sheetName }}</option>
+        </select>
+      </div>
+      </div>
     </div>
-  </div>
+
 
   <div *ngIf="!showTable" class="container" style="padding-top: 8%">
     <app-uploaded-files></app-uploaded-files>
   </div>
-
-
-
 </div>
 
 
@@ -25,7 +32,7 @@
 <div *ngIf="showTable" class="p-2">
   <div  class="d-flex flex-row-reverse" >
     <button class="m-1 btn btn-secondary" (click)="uploadNewFile()">Upload New File</button>
-    <button class="m-1 btn btn-primary" (click)="addToDatabase()">Add to Database</button>
+    <button class="m-1 btn btn-primary" (click)="addToDatabase()">Upload</button>
   </div>
 
   <table class="table table-striped">
