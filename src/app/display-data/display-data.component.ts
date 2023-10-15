@@ -16,7 +16,38 @@ export class DisplayDataComponent {
     this.insertedData = this.fileUploadService.getInsertedData();
     console.log(this.insertedData);
     console.log(this.initialExcelData);
+
+    const initialHeaders = this.initialExcelData[0];
+
+    for (let i = 0; i < initialHeaders.length; i++) {
+      const initialHeader = initialHeaders[i];
+      if (this.isDateHeader(initialHeader)) {
+        this.formatDateColumn(i);
+      }
     }
+  }
+
+  private isDateHeader(header: string): boolean {
+    return header.toLowerCase().includes('date');
+  }
+
+  private formatDateColumn(columnIndex: number): void {
+    const dateFormat = 'dd/MM/yyyy';
+    const dateParser = (value: any) => {
+      const parsedDate = new Date(value);
+      return isNaN(parsedDate.getTime()) ? value : parsedDate.toLocaleDateString('en-GB');
+    };
+    this.initialExcelData.slice(1).forEach(row => {
+      if (row.length > columnIndex) {
+        row[columnIndex] = dateParser(row[columnIndex]);
+      }
+    });
+    this.insertedData.slice(1).forEach(row => {
+      if (row.length > columnIndex) {
+        row[columnIndex] = dateParser(row[columnIndex]);
+      }
+    });
+  }
 
 
   getRowId(row: any[]): string {

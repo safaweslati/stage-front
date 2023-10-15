@@ -132,8 +132,8 @@ export class FileConfigComponent {
         }, 3000);
       },
       (error) => {
-        this.errorMessage = error;
-        console.error(error);
+        this.errorMessage = "Error processing the data";
+        console.log(error);
 
         // Handle save and map error
         setTimeout(() => {
